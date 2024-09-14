@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:http_parser/http_parser.dart';
+import 'package:dr_writely/login/record_view.dart';
 
 class AudioRecorderPage extends StatefulWidget {
   static String tag = 'audio_recording-page';
@@ -79,7 +80,7 @@ class _AudioRecorderPageState extends State<AudioRecorderPage> {
   Future<void> sendFile() async {
     if (recordedFilePath.isEmpty) return;
 
-    var uri = Uri.parse('http://192.168.1.14:5000/upload');
+    var uri = Uri.parse('http://172.16.128.130:5000/upload');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(
       await http.MultipartFile.fromPath(
@@ -169,7 +170,12 @@ class _AudioRecorderPageState extends State<AudioRecorderPage> {
               child: Text('Play Audio'),
             ),
             ElevatedButton(
-              onPressed: recordedFilePath.isNotEmpty ? sendFile : null,
+              onPressed: () {
+                if (recordedFilePath.isNotEmpty) {
+                  sendFile();
+                }
+                Navigator.of(context).pushNamed(RecordView.tag);
+              },
               child: Text('Send to Server'),
             ),
             ElevatedButton(
